@@ -1,0 +1,27 @@
+name: Check the official Fourier Q8 in desktop Chromium
+on:
+  push:
+    branches: [verify/fourier-official-q8-browser]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 18
+    container:
+      image: mcr.microsoft.com/playwright:v1.56.1-noble
+      options: --ipc=host
+    env:
+      DEMO_URL: https://oruk-fourier-2b-local.static.hf.space/index.html
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Verify the reference audio and test the live demo
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --no-audit --no-fund --silent playwright@1.56.1
+          curl -fsSL https://raw.githubusercontent.com/handy-computer/transcribe.cpp/cfa237c2551a4b2d3a56ff8fe5461e3c67c51772/samples/fleurs-en.wav -o /tmp/fleurs-en.wav
+          echo '7835bd6ffb54ce38a2a9bcde3905ba424faed94d50a474f21a9cbe9209b869df  /tmp/fleurs-en.wav' | sha256sum -c -
+          node check.cjs
