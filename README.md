@@ -325,7 +325,7 @@ The typical paths are:
 
 - **macOS**: `~/Library/Application Support/com.pais.handy/`
 - **Windows**: `C:\Users\{username}\AppData\Roaming\com.pais.handy\`
-- **Linux**: `~/.config/com.pais.handy/`
+- **Linux**: `$XDG_DATA_HOME/com.pais.handy/` (usually `~/.local/share/com.pais.handy/`)
 
 #### Step 2: Create Models Directory
 
@@ -384,22 +384,15 @@ Place the `.gguf` file directly into the `models` directory, exactly like the Wh
 3. Your manually installed models should now appear as "Downloaded"
 4. Select the model you want to use and test transcription
 
-### Custom Whisper Models
+### Custom transcription models
 
-Handy can auto-discover custom Whisper GGML models placed in the `models` directory. This is useful for users who want to use fine-tuned or community models not included in the default model list.
+Handy also discovers models outside its catalog. Use a Whisper GGML `.bin` or a single-file speech `.gguf` compatible with the version of [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) bundled with Handy. A llama.cpp decoder and separate audio projector use a different layout.
 
-**How to use:**
+1. Place the file directly in your `models` directory (see paths above).
+2. Restart Handy and select the model in Settings → Models.
+3. To check it from a terminal, run `handy --list-models --json`, then `handy --model MODEL_ID --transcribe-file sample.wav --json` with a 16 kHz, mono, 16-bit PCM WAV file.
 
-1. Obtain a Whisper model in GGML `.bin` format (e.g., from [Hugging Face](https://huggingface.co/models?search=whisper%20ggml))
-2. Place the `.bin` file in your `models` directory (see paths above)
-3. Restart Handy to discover the new model
-4. The model will appear in the "Custom Models" section of the Models settings page
-
-**Important:**
-
-- Community models are user-provided and may not receive troubleshooting assistance
-- The model must be a valid Whisper GGML format (`.bin` file)
-- Model name is derived from the filename (e.g., `my-custom-model.bin` → "My Custom Model")
+For a model outside the catalog, the ID is its filename without the extension. The display name can also come from the GGUF header. Community models are user-provided and may not receive troubleshooting assistance.
 
 ### Linux Startup Crashes or Instability
 
